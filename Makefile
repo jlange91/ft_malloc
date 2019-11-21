@@ -17,7 +17,7 @@ endif
 NAME = libft_malloc_$(HOSTTYPE).so
 LINK_NAME = libft_malloc.so
 LIBFT = lft
-SRC_NAME = main.c
+SRC_NAME = malloc.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -45,7 +45,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 
 clean:
 	@$(MAKE) clean -C libft
-	@rm -f $(OBJ)
+	@rm -Rf $(OBJ) $(OBJ_PATH)
 
 fclean: clean
 	@$(MAKE) fclean -C libft

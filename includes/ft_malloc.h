@@ -12,9 +12,15 @@
 
 #ifndef FT_MALLOC_H
 # define FT_MALLOC_H
+# include "../libft/includes/libft.h"
+# include <pthread.h>
+
+#include <stdio.h>
+
+# include <sys/mman.h>
 # define TINY 128
 # define SMALL 2048
- 
+
 typedef struct	s_aloc
 {
 	void 					*begin;
@@ -22,5 +28,11 @@ typedef struct	s_aloc
 
 	struct s_aloc	*next;
 }								t_aloc;
+
+static pthread_mutex_t g_malloc_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void  *malloc(size_t size);
+// void free(void *ptr);
+// void *realloc(void *ptr, size_t size);
 
 #endif
