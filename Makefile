@@ -14,59 +14,43 @@ ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-.PHONY: all, clean, fclean, re
-
-SRC_PATH = srcs
-
-OBJ_PATH = objs
-
 NAME = libft_malloc_$(HOSTTYPE).so
-
-CC = cc
-
-HEADER = include/ft_select.h
-
+LINK_NAME = libft_malloc.so
+LIBFT = lft
+SRC_NAME = main.c
+OBJ_NAME = $(SRC_NAME:.c=.o)
+SRC_PATH = ./src/
+OBJ_PATH = ./obj/
+INC_PATH = ./includes/
+SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
+OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
+INC = $(addprefix -I,$(INC_PATH))
+CC = clang
+CPPFLAGS = -Iincludes
 CFLAGS = -Wall -Wextra -Werror
 
-CPPFLAGS = -Iinclude
+all: $(LIBFT) $(NAME)
 
-SRC_NAME =  main.c \
-			init_term.c \
-			singleton.c \
-			read.c \
-			init_layout.c \
-			init_params.c \
-			calc_layout.c \
-			print_args.c \
-			arrow_actions.c \
-			actions.c \
-			tools.c \
-			signals.c \
-			set_colors.c \
-			exit.c
+lft:
+	$(MAKE) -C libft
 
-OBJ = $(SRC_NAME:.c=.o)
+$(NAME): $(OBJ)
+	$(CC) -lpthread -shared $^ -o $@  -Llibft -lft
+	@rm -f $(LINK_NAME)
+	@ln -s $(NAME) $(LINK_NAME)
 
-OBJS = $(addprefix objs/, $(OBJ))
-
-all: $(NAME)
-
-$(NAME): objs/ $(OBJS)
-	@$(CC) $(OBJS) libft/libft.a -ltermcap -lncurses -o $(NAME)
-
-objs/:
-	@make -C libft
-	@mkdir $(OBJ_PATH) 2> /dev/null
-
-objs/%.o: srcs/%.c $(HEADER)
-	@$(CC) -Ilibft/includes -o $@ $(CPPFLAGS) -c $< $(CFLAGS)
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	@mkdir -p $(OBJ_PATH)
+	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 
 clean:
-	@make clean -C libft
-	@rm -rf $(OBJ_PATH)
+	@$(MAKE) clean -C libft
+	@rm -f $(OBJ)
 
-fclean:
-	@make fclean -C libft
-	@rm -rf $(NAME) $(OBJ_PATH) $(NAME)
+fclean: clean
+	@$(MAKE) fclean -C libft
+	@rm -f $(NAME) $(LINK_NAME)
 
 re: fclean all
+
+.PHONY : all, clean, fclean, re, lft
