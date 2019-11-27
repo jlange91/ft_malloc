@@ -17,7 +17,10 @@ endif
 NAME = libft_malloc_$(HOSTTYPE).so
 LINK_NAME = libft_malloc.so
 LIBFT = lft
-SRC_NAME = malloc.c
+SRC_NAME = 	malloc.c				\
+						free.c					\
+						realloc.c				\
+						init_address.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -32,10 +35,10 @@ CFLAGS = -Wall -Wextra -Werror
 all: $(LIBFT) $(NAME)
 
 lft:
-	$(MAKE) -C libft
+	@$(MAKE) -C libft
 
 $(NAME): $(OBJ)
-	$(CC) -lpthread -shared $^ -o $@  -Llibft -lft
+	@$(CC) -lpthread -shared $^ -o $@  -Llibft -lft
 	@rm -f $(LINK_NAME)
 	@ln -s $(NAME) $(LINK_NAME)
 
@@ -50,6 +53,10 @@ clean:
 fclean: clean
 	@$(MAKE) fclean -C libft
 	@rm -f $(NAME) $(LINK_NAME)
+
+test: $(LIBFT) $(NAME)
+	@$(CC) main.c -I$(INC_PATH) $(LINK_NAME) libft/libft.a
+	@./a.out
 
 re: fclean all
 
